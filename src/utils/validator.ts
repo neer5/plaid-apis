@@ -28,7 +28,7 @@ export const getTransactionsValidator = (
   // create schema object
   const schema = Joi.object({
     publictoken: Joi.string().required()
-  });
+  }).unknown(true);
   const { error } = schema.validate(req.headers);
 
   if (error) {

@@ -17,7 +17,7 @@ export const createLinkToken: RequestHandler = async (
   } catch (error: any) {
     return res
       .status(error?.response?.status || 500)
-      .json({ message: error?.message || 'Something went wrong' });
+      .json({ message: error?.response?.statusText || 'Something went wrong' });
   }
 };
 
@@ -36,10 +36,15 @@ export const getTransactions: RequestHandler = async (
     } = transactionData;
     return res
       .status(200)
-      .json({ message: 'Transactions successfully', data, hasMore, cursor });
+      .json({
+        message: 'Transactions listed successfully',
+        data,
+        hasMore,
+        cursor
+      });
   } catch (error: any) {
     return res
       .status(error?.response?.status || 500)
-      .json({ message: error?.message || 'Something went wrong' });
+      .json({ message: error?.response?.statusText || 'Something went wrong' });
   }
 };
