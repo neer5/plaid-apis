@@ -20,17 +20,24 @@ export const getTransactions: RequestHandler = async (
   res: Response
 ) => {
   const { publicToken } = req.body;
-  const accessToken = await plaid.exchangeAccessToken(publicToken)
-  .catch(err => {
-    console.log("failed to get access token", err)
-    throw new Error(err)
-  });
-  const data = await plaid.getTransactions(accessToken)
-  .catch(err => {
-    console.log("failed to get transacrions", err)
-    throw new Error(err)
-  });
+  const accessToken = await plaid
+    .exchangeAccessToken(publicToken)
+    .catch((err) => {
+      console.log('failed to get access token', err);
+      throw new Error(err);
+    });
+  const transactionData = await plaid
+    .getTransactions(accessToken, req.query)
+    .catch((err) => {
+      console.log('failed to get transacrions', err);
+      throw new Error(err);
+    });
+  const {
+    added: data,
+    has_more: hasMore,
+    next_cursor: cursor
+  } = transactionData;
   return res
     .status(200)
-    .json({ message: 'Transactions successfully', data });
+    .json({ message: 'Transactions successfully', data, hasMore, cursor });
 };

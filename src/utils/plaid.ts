@@ -3,7 +3,8 @@ import {
   LinkTokenCreateRequest,
   PlaidApi,
   PlaidEnvironments,
-  Transaction
+  TransactionsSyncRequest,
+  TransactionsSyncResponse
 } from 'plaid';
 import config from 'config';
 
@@ -27,12 +28,18 @@ export class Plaid {
 
   public async exchangeAccessToken(publicToken: string) {
     const tokenResponse = await this.client.itemPublicTokenExchange({
-      public_token: publicToken,
+      public_token: publicToken
     });
     return tokenResponse.data.access_token;
   }
 
-  public async createLinkToken({ clientUserId, plaidRedirectUri }: { clientUserId: string, plaidRedirectUri?:string }) {
+  public async createLinkToken({
+    clientUserId,
+    plaidRedirectUri
+  }: {
+    clientUserId: string;
+    plaidRedirectUri?: string;
+  }) {
     const configs: LinkTokenCreateRequest = {
       user: {
         // This should correspond to a unique id for the current user.
@@ -51,37 +58,18 @@ export class Plaid {
     return data;
   }
 
-  public async getTransactions(accessToken: string) {
-      // Set cursor to empty to receive all historical updates
-      let cursor = null;
-
-      // New transaction updates since "cursor"
-      let added:any = [];
-      let modified:any = [];
-      // Removed transaction ids
-      let removed:any = [];
-      let hasMore = true;
-      // Iterate through each page of new transaction updates for item
-      while (hasMore) {
-        const request:any = {
-          access_token: accessToken,
-          cursor,
-        };
-        const { data } : {data: any}= await this.client.transactionsSync(request);
-        console.log("====", data)
-        // Add this page of results
-        added = added.concat(data.added);
-        modified = modified.concat(data.modified);
-        removed = removed.concat(data.removed);
-        hasMore = data.has_more;
-        // Update cursor to the next cursor
-        cursor = data.next_cursor;
-        // prettyPrintResponse(response);
-      }
-      return added;
-      // const compareTxnsByDateAscending = (a, b) => (a.date > b.date) - (a.date < b.date);
-      // // Return the 8 most recent transactions
-      // const recently_added = [...added].sort(compareTxnsByDateAscending).slice(-8);
-      // return {latest_transactions: recently_added};
+  public async getTransactions(
+    accessToken: string,
+    { cursor, count }: { cursor?: string; count?: number }
+  ) {
+    // Set cursor to empty to receive all historical updates
+    const request: TransactionsSyncRequest = {
+      access_token: accessToken,
+      count: Number(count) || 10,
+      cursor
+    };
+    const { data }: { data: TransactionsSyncResponse } =
+      await this.client.transactionsSync(request);
+    return data;
   }
 }
