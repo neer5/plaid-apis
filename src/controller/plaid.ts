@@ -6,7 +6,9 @@ export const createLinkToken: RequestHandler = async (
   req: Request,
   res: Response
 ) => {
-  const { clientUserId } = req.body;
+  const { clientUserId } = req.body as {
+    clientUserId: string;
+  };
   try {
     const data = await plaid.createLinkToken({
       clientUserId
@@ -25,7 +27,9 @@ export const getTransactions: RequestHandler = async (
   req: Request,
   res: Response
 ) => {
-  const { publictoken } = req.headers;
+  const { publictoken } = req.headers as {
+    publictoken: string;
+  };
   try {
     const accessToken = await plaid.exchangeAccessToken(publictoken as string);
     const transactionData = await plaid.getTransactions(accessToken, req.query);
