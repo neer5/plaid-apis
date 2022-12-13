@@ -6,10 +6,10 @@ export const createLinkToken: RequestHandler = async (
   req: Request,
   res: Response
 ) => {
-  const params = {
-    clientUserId: 'user-id'
-  };
-  const data = await plaid.createLinkToken(params);
+  const { clientUserId } = req.body;
+  const data = await plaid.createLinkToken({
+    clientUserId
+  });
   return res
     .status(200)
     .json({ message: 'Link token created successfully', data });
