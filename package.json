@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines" : { 
+    "npm" : ">=8.0.0 <9.0.0",
+    "node" : ">=16.0.0 <17.0.0"
+  },
   "scripts": {
-    "start": "nodemon src/app.ts",
+    "start": "tsc && node dist/app.js",
+    "start:nodemon": "nodemon src/app.ts",
     "lint": "eslint . --ext .ts --fix",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
     "test": "jest"
