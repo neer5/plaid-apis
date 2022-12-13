@@ -2,7 +2,8 @@ import {
   Configuration,
   LinkTokenCreateRequest,
   PlaidApi,
-  PlaidEnvironments
+  PlaidEnvironments,
+  Transaction
 } from 'plaid';
 import config from 'config';
 
@@ -24,7 +25,14 @@ export class Plaid {
     this.client = new PlaidApi(configuration);
   }
 
-  public async createLinkToken({ clientUserId }: { clientUserId: string }) {
+  public async exchangeAccessToken(publicToken: string) {
+    const tokenResponse = await this.client.itemPublicTokenExchange({
+      public_token: publicToken,
+    });
+    return tokenResponse.data.access_token;
+  }
+
+  public async createLinkToken({ clientUserId, plaidRedirectUri }: { clientUserId: string, plaidRedirectUri?:string }) {
     const configs: LinkTokenCreateRequest = {
       user: {
         // This should correspond to a unique id for the current user.
@@ -36,16 +44,43 @@ export class Plaid {
       language: 'en'
     };
 
-    // if (PLAID_REDIRECT_URI !== '') {
-    //   configs.redirect_uri = PLAID_REDIRECT_URI;
-    // }
-
-    // if (PLAID_ANDROID_PACKAGE_NAME !== '') {
-    //   configs.android_package_name = PLAID_ANDROID_PACKAGE_NAME;
-    // }
+    if (plaidRedirectUri !== '') {
+      configs.redirect_uri = plaidRedirectUri;
+    }
     const { data } = await this.client.linkTokenCreate(configs);
     return data;
-    // prettyPrintResponse(createTokenResponse);
-    // response.json(createTokenResponse.data);
+  }
+
+  public async getTransactions(accessToken: string) {
+      // Set cursor to empty to receive all historical updates
+      let cursor = null;
+
+      // New transaction updates since "cursor"
+      let added:any = [];
+      let modified:any = [];
+      // Removed transaction ids
+      let removed:any = [];
+      let hasMore = true;
+      // Iterate through each page of new transaction updates for item
+      while (hasMore) {
+        const request:any = {
+          access_token: accessToken,
+          cursor,
+        };
+        const { data } : {data: any}= await this.client.transactionsSync(request);
+        // Add this page of results
+        added = added.concat(data.added);
+        modified = modified.concat(data.modified);
+        removed = removed.concat(data.removed);
+        hasMore = data.has_more;
+        // Update cursor to the next cursor
+        cursor = data.next_cursor;
+        // prettyPrintResponse(response);
+      }
+      return added;
+      // const compareTxnsByDateAscending = (a, b) => (a.date > b.date) - (a.date < b.date);
+      // // Return the 8 most recent transactions
+      // const recently_added = [...added].sort(compareTxnsByDateAscending).slice(-8);
+      // return {latest_transactions: recently_added};
   }
 }

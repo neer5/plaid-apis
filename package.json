@@ -15,7 +15,8 @@
     "body-parser": "^1.20.1",
     "config": "^3.3.8",
     "express": "^4.18.2",
-    "plaid": "^12.1.0"
+    "plaid": "^12.1.0",
+    "typescript": "^4.9.4"
   },
   "devDependencies": {
     "@types/config": "^3.3.0",
