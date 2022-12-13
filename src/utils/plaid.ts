@@ -68,6 +68,7 @@ export class Plaid {
           cursor,
         };
         const { data } : {data: any}= await this.client.transactionsSync(request);
+        console.log("====", data)
         // Add this page of results
         added = added.concat(data.added);
         modified = modified.concat(data.modified);
