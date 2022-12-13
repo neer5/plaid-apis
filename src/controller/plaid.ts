@@ -34,14 +34,12 @@ export const getTransactions: RequestHandler = async (
       has_more: hasMore,
       next_cursor: cursor
     } = transactionData;
-    return res
-      .status(200)
-      .json({
-        message: 'Transactions listed successfully',
-        data,
-        hasMore,
-        cursor
-      });
+    return res.status(200).json({
+      message: 'Transactions listed successfully',
+      data,
+      hasMore,
+      cursor
+    });
   } catch (error: any) {
     return res
       .status(error?.response?.status || 500)
