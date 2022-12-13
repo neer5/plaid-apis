@@ -7,12 +7,10 @@ import cors from 'cors';
 const app = express();
 
 app.use(json());
-
 app.use(urlencoded({ extended: true }));
-
 app.use(
   cors({
-    origin: config.get('CORS_ORIGIN')
+    origin: (config.get('CORS_ORIGIN') as string).split(',')
   })
 );
 app.use('/api/plaid', plaidRoutes);
