@@ -1,0 +1,33 @@
+{
+  "name": "plaid-apis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/app.ts",
+    "lint": "eslint . --ext .ts --fix",
+    "prettier": "prettier --config .prettierrc src/**/*.ts --write",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "config": "^3.3.8",
+    "express": "^4.18.2",
+    "plaid": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/config": "^3.3.0",
+    "@types/express": "^4.17.14",
+    "@types/node": "^18.11.13",
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.46.1",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.29.0",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.1",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1"
+  }
+}
