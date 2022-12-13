@@ -20,8 +20,8 @@
     "config": "^3.3.8",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "plaid": "^12.1.0",
-    "typescript": "^4.9.4"
+    "joi": "^17.7.0",
+    "plaid": "^12.1.0"
   },
   "devDependencies": {
     "@types/config": "^3.3.0",

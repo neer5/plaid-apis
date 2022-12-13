@@ -26,13 +26,22 @@ export class Plaid {
     this.client = new PlaidApi(configuration);
   }
 
-  public async exchangeAccessToken(publicToken: string) {
+  /**
+   * Exchange public token with Access token
+   * @param {String} publictoken
+   */
+  public async exchangeAccessToken(publictoken: string) {
     const tokenResponse = await this.client.itemPublicTokenExchange({
-      public_token: publicToken
+      public_token: publictoken
     });
     return tokenResponse.data.access_token;
   }
 
+  /**
+   * Create Link token from client userId
+   * @param {String} clientUserId
+   * @param {String} plaidRedirectUri
+   */
   public async createLinkToken({
     clientUserId,
     plaidRedirectUri
@@ -58,6 +67,12 @@ export class Plaid {
     return data;
   }
 
+  /**
+   * Get transactions list
+   * @param {String} accessToken
+   * @param {String} cursor
+   * @param {String} count
+   */
   public async getTransactions(
     accessToken: string,
     { cursor, count }: { cursor?: string; count?: number }

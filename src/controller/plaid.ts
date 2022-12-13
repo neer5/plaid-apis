@@ -7,12 +7,18 @@ export const createLinkToken: RequestHandler = async (
   res: Response
 ) => {
   const { clientUserId } = req.body;
-  const data = await plaid.createLinkToken({
-    clientUserId
-  });
-  return res
-    .status(200)
-    .json({ message: 'Link token created successfully', data });
+  try {
+    const data = await plaid.createLinkToken({
+      clientUserId
+    });
+    return res
+      .status(200)
+      .json({ message: 'Link token created successfully', data });
+  } catch (error: any) {
+    return res
+      .status(error?.response?.status || 500)
+      .json({ message: error?.message || 'Something went wrong' });
+  }
 };
 
 export const getTransactions: RequestHandler = async (
@@ -33,7 +39,7 @@ export const getTransactions: RequestHandler = async (
       .json({ message: 'Transactions successfully', data, hasMore, cursor });
   } catch (error: any) {
     return res
-      .status(error.response.status || 500)
-      .json({ message: error.response.statusText });
+      .status(error?.response?.status || 500)
+      .json({ message: error?.message || 'Something went wrong' });
   }
 };
